@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fracciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Suma de Fracciones Homogéneas</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group mb-3 pt-2">
+                <div class="form-group">
+                    <label for="numeradores">Numeradores</label>
+                    <input type="text" class="form-control" placeholder="Ingresa números enteros separados por comas"
+                        id="numeradores" value="1,-2,3">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group mb-3 pt-2">
+                <div class="form-group">
+                    <label for="text-numbers1">Denominador el mismo para todos</label>
+                    <input type="text" class="form-control" placeholder="Ingresa números enteros separados por comas"
+                        id="text-numbers1" value="5,5,5">
+                    <button class="btn btn-outline-secondary d-none" type="button" id="mcm">M.C.M.</button>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <canvas id="canvas" width="500" height="100">
+
+                </canvas>
+
+
+            </div>
+            <button class="btn btn-success" id="calcular">Calcular la suma</button>
+            <div class="alert alert-primary" role="alert">
+                El M.C.M es
+                <span class="res1"></span>
+            </div>
+            <span class="primos1"></span>
+            <div class="row">
+
+                <canvas id="canvas2" width="500" height="300">
+
+                </canvas>
+            </div>
+            <div class="input-group mb-3 pt-2">
+                <input type="text" class="form-control" placeholder="Ingresa números enteros separados por comas"
+                    id="text-numbers2" value="20,30,40">
+                <button class="btn btn-outline-secondary" type="button" id="mcd">M.C.D.</button>
+            </div>
+            <div class="alert alert-primary" role="alert">
+                El M.C.D es
+                <span class="res2"></span>
+            </div>
+            <span class="primos2"></span>
+        </div>
+        <div class="row pt-2">
+            <div class="alert bg-warning">
+                Por lo tanto numerador como denominador del resultado se dividen por el valor del M.C.D. que
+                en este caso es <span class="text-primary fs-3" id="mcdd1"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row">
+
+                            <span class="resdd text-center fs-2"></span>
+
+                        </div>
+                        <div class="row">
+                            <hr class="text-dark start-0">
+                        </div>
+                        <div class="row">
+
+                            <span class="mt-0 text-center fs-2" id="mcdd2"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+
+                            <span class="resddr text-center fs-2"></span>
+
+                        </div>
+                        <div class="row">
+                            <hr class="text-dark start-0">
+                        </div>
+                        <div class="row">
+
+                            <span class="mt-0 text-center fs-2" id="mcdd2r"></span>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+</body>
+<script>
+    //calculate the m.c.m of three or more numbers
+
+    var MCM;
+    var MCD;
+    var TOTAL;
+    var NR;
+    var DR;
+    const dibujaFraciones = (nums, dens) => {
+
+
+        let numeradores = nums.split(',');
+        let denominadores = dens.split(',');
+        //   console.log(denominadores);
+        let resultado = [];
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let ancho = canvas.width;
+        let alto = canvas.height;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '20px sans-serif';
+        ctx.clearRect(0, 0, ancho, alto);
+        numeradores.forEach((n, i) => {
+            ctx.fillText(Math.abs(numeradores[i]), 22 + (40 * i), alto / 2 - 12);
+            ctx.fillText(denominadores[i], 22 + (40 * i), alto / 2 + 12);
+            //sign of a number
+            if ((numeradores[i] < 0) && (i > 0)) {
+                ctx.fillText('-', 1 + (40 * i), alto / 2 - 1);
+            } else
+                if (i > 0)
+                    ctx.fillText('+', 1 + (40 * i), alto / 2);
+
+            //draw a small line
+            ctx.beginPath();
+            ctx.moveTo(10 + (40 * i), alto / 2);
+            ctx.lineTo(35 + (40 * i), alto / 2);
+            ctx.stroke();
+        });
+
+
+    }
+
+
+
+    const sumaFracciones = (nums, dens, mcm, nr, dr) => {
+
+        let numeradores = nums.split(',');
+        let denominadores = dens.split(',');
+        let resultado = [];
+        let canvas = document.getElementById('canvas2');
+        let ctx = canvas.getContext('2d');
+        let ancho = canvas.width;
+        let alto = canvas.height;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '20px sans-serif';
+        ctx.clearRect(0, 0, ancho, alto);
+        ctx.beginPath();
+        let linea1 = alto / 5;
+        ctx.moveTo(10, linea1);
+        let spacing = mcm.length < 3 ? 0 : 15;
+        let spacingline = mcm.length < 3 ? 0 : 50;
+        ctx.lineTo((47 + spacingline) + (40 * 2 * numeradores.length), linea1);
+        ctx.stroke();
+        ctx.fillText(MCM, ((47 + spacingline) + (40 * 2 * numeradores.length)) / 2, linea1 + 12);
+        numeradores.forEach((n, i) => {
+            ctx.fillText(`(${mcm}/${denominadores[i]})*${n}`, 42 + ((95 + spacing) * numeradores.indexOf(n)), linea1 - 12);
+            if (i < numeradores.length - 1)
+                ctx.fillText("+", 88 + (spacing - 6) + ((95 + spacing) * numeradores.indexOf(n)), linea1 - 12);
+        });
+
+        ctx.beginPath();
+        let linea2 = alto / 2;
+        ctx.moveTo(10, linea2);
+        ctx.lineTo(47 + (40 * 2 * numeradores.length), linea2);
+        ctx.stroke();
+        ctx.fillText(MCM, (47 + (40 * 2 * numeradores.length)) / 2, linea2 + 12);
+        numeradores.forEach((n, i) => {
+            ctx.fillText(`(${parseInt(mcm) / parseInt(denominadores[i])})*${n}`, 42 + (95 * numeradores.indexOf(n)), linea2 - 12);
+            if (i < numeradores.length - 1)
+                ctx.fillText("+", 88 + (95 * numeradores.indexOf(n)), linea2 - 12);
+        });
+
+        ctx.beginPath();
+        let linea3 = parseInt(0.7 * alto);
+        ctx.moveTo(10, linea3);
+        ctx.lineTo(47 + (40 * 2 * numeradores.length), linea3);
+        ctx.stroke();
+        ctx.fillText(MCM, (47 + (40 * 2 * numeradores.length)) / 2, linea3 + 12);
+        numeradores.forEach((n, i) => {
+            let nn = parseInt(mcm) / parseInt(denominadores[i]) * parseInt(n);
+            // console.log(nn);
+            
+            ctx.fillText(`${Math.abs(nn)}`, 42 + (95 * numeradores.indexOf(n)), linea3 - 12);
+                let signo = parseInt(nn) < 0 ? "-" : "+";
+                console.log(signo);
+                if (i === 0 && signo === "+") signo = "";
+                ctx.fillText(signo, 8 + (95 * numeradores.indexOf(n)), linea3 - 12);
+      
+        });
+
+
+        ctx.beginPath();
+        let linea4 = parseInt(0.9 * alto);
+        ctx.moveTo(20, linea4);
+        ctx.lineTo(67, linea4);
+        ctx.stroke();
+        ctx.fillText(MCM, 47, linea4 + 12);
+        let total = 0;
+        numeradores.forEach((n, i) => {
+
+            let nn = parseInt(mcm) / parseInt(denominadores[i]) * parseInt(n);
+            total += nn;
+            console.log(nn);
+
+        });
+        ctx.fillText(`${total}`, 42, linea4 - 12);
+        if (nr != "" && dr != "") {
+            ctx.beginPath();
+            ctx.moveTo(90, linea4);
+            ctx.lineTo(125, linea4);
+            ctx.stroke();
+            ctx.fillText("=", 80, linea4 - 1);
+            ctx.fillText(nr, 105, linea4 - 12);
+            ctx.fillText(dr, 105, linea4 + 12);
+        }
+
+        TOTAL = total;
+        document.getElementById('text-numbers2').value = `${Math.abs(total)},${MCM}`;
+
+
+    }
+
+    document.getElementById("mcm").addEventListener("click", e => {
+        e.preventDefault();
+        let numbers = document.getElementById("text-numbers1").value.split(",");
+        console.log(numbers);
+        calculateMCM(numbers.map(n => parseInt(n)));
+    });
+
+    document.getElementById("mcd").addEventListener("click", e => {
+        e.preventDefault();
+        let numbers = document.getElementById("text-numbers2").value.split(",");
+        console.log(numbers);
+        calculateMCD(numbers.map(n => parseInt(n)));
+        // document.getElementById('mcdd1').innerText = MCD;
+        document.getElementById('mcdd1').innerText = `${MCD}`;
+        document.querySelector(".resdd").innerHTML = `${TOTAL}/${MCD}`;
+        document.getElementById('mcdd2').innerText = `${MCM}/${MCD}`;
+        NR = TOTAL / MCD;
+        DR = MCM / MCD;
+        document.querySelector(".resddr").innerHTML = `=${NR}`;
+        document.getElementById('mcdd2r').innerText = `=${DR}`;
+    });
+
+    function calculateMCM(denominators) {
+        //  let denominators = [30, 15, 20, 25, 50]
+        let num = mcmArray(denominators);
+        MCM = num;
+        console.log(num);
+
+        document.querySelector(".res1").innerHTML = `${printPot(primeFactors(num))} = ${num}`;
+
+        let html = "<ul class='list-group'>";
+        denominators.forEach(den => {
+            html += `<li class="list-group-item">${den} = ${printPot(primeFactors(den))}</li>`
+        });
+        html += "</ul>";
+        document.querySelector(".primos1").innerHTML = html;
+    }
+
+
+    function calculateMCD(denominators) {
+        //  let denominators = [30, 15, 20, 25, 50]
+        let num = mcdArray(denominators);
+        MCD = num;
+        console.log(num);
+
+        document.querySelector(".res2").innerHTML = `${printPot(primeFactors(num))} = ${num}`;
+
+        let html = "<ul class='list-group'>";
+        denominators.forEach(den => {
+            html += `<li class="list-group-item">${den} = ${printPot(primeFactors(den))}</li>`
+        });
+        html += "</ul>";
+        document.querySelector(".primos2").innerHTML = html;
+    }
+
+
+
+    function mcmArray(array) {
+        var m = array[0];
+        for (var i = 1; i < array.length; i++) {
+            if (array[i] > m) {
+                m = array[i];
+            }
+        }
+        while (true) {
+            var flag = true;
+            for (var i = 0; i < array.length; i++) {
+                if (m % array[i] != 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                return m;
+            }
+            m++;
+        }
+    }
+
+    //calculate the prime factors of a number
+    function primeFactors(n) {
+        var factors = [];
+        var d = 2;
+        while (n > 1) {
+            while (n % d == 0) {
+                factors.push(d);
+                n = n / d;
+            }
+            d++;
+        }
+        return factors;
+    }
+
+    const printPot = primeNumbers => {
+
+        console.log(primeNumbers);
+        let fact = primeNumbers[0];
+        let expo = 1;
+        let html = "";
+        for (let i = 0; i < primeNumbers.length; i++) {
+
+            if (primeNumbers[i] === primeNumbers[i + 1])
+                expo++;
+            else {
+                if (expo > 1)
+                    html += `${fact}<sup>${expo}</sup>*`;
+                else
+                    html += `${fact}*`;
+                if (i < primeNumbers.lentgh - 1) html += `*`;
+                fact = primeNumbers[i + 1];
+                expo = 1;
+
+            }
+        }
+        //delete last character of a string html
+        html = html.substring(0, html.length - 1);
+        return html;
+    }
+
+
+    //calculate the mcd of an array of integer numbers
+    function mcdArray(array) {
+        var mcd = array[0];
+        for (var i = 1; i < array.length; i++) {
+            mcd = mcdcd(mcd, array[i]);
+        }
+        return mcd;
+    }
+
+    //calculate the mcd of two integer numbers
+    function mcdcd(a, b) {
+        if (a == 0) return b;
+        if (b == 0) return a;
+        while (a != b) {
+            if (a > b) a = a - b;
+            else b = b - a;
+        }
+        return a;
+    }
+
+    //calculate the m.c.m of three or more numbers
+
+    const calcularSuma = () => {
+        dibujaFraciones(document.getElementById("numeradores").value, document.getElementById("text-numbers1").value);
+
+        document.getElementById("mcm").click();
+        sumaFracciones(document.getElementById("numeradores").value, document.getElementById("text-numbers1").value, MCM, "", "");
+        document.getElementById("mcd").click();
+        sumaFracciones(document.getElementById("numeradores").value, document.getElementById("text-numbers1").value, MCM, NR, DR);
+    }
+
+    calcularSuma();
+    document.getElementById("calcular").addEventListener("click", calcularSuma);
+
+
+
+</script>
+
+</html>
